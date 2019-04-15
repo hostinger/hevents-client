@@ -1,6 +1,6 @@
 <?php
 
-namespace Hostinger\HeventsClient;
+namespace Hostinger\Hevents;
 
 interface HeventsClientInterface
 {
