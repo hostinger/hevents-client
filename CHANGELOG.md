@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.1] - 2019-04-15
+### Updated
+- Renamed `post` method to `emit`
+- URL format - endpoint is now appended automatically
+
 ## [1.0.0] - 2019-04-15
 ### Added
 - HeventsClient implementation

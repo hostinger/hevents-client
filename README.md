@@ -13,14 +13,14 @@ In your composer.json add the repository:
 Run `composer install`
 
 ## Usage
-The `post` method takes an array of event details.
+The `emit` method takes an array of event details.
 The valid parameters that can be passed are `event` and `properties`.
 
 String `event` - the name of the event - is required.
 Array `properties` can be skipped - the default value is an empty array.
 
 ```php
-use \Hostinger\Hevents\HeventsClient;
+use Hostinger\Hevents\HeventsClient;
 
 $event = [
     'event' => 'USER_SIGN_UP',
@@ -35,5 +35,5 @@ $event = [
 ];
 
 $client = new HeventsClient('http://hevents.io', '938E5BF6213D34BD4C2EDF3C81E3E7BD80F52178F3B467643FE3D0F1E7377773');
-$response = $client->post($event);
+$response = $client->emit($event);
 ```

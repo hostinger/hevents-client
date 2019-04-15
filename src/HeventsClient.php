@@ -73,7 +73,7 @@ class HeventsClient implements HeventsClientInterface
      * @return PromiseInterface|ResponseInterface
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function post(array $event, bool $async = false)
+    public function emit(array $event, bool $async = false)
     {
         $request = $this->createRequest($event);
         if ($async) {
@@ -83,10 +83,10 @@ class HeventsClient implements HeventsClientInterface
     }
 
     /**
-     * @param $header
-     * @param $value
+     * @param string $header
+     * @param string $value
      */
-    public function appendHeaders($header, $value)
+    public function appendHeaders(string $header, string $value)
     {
         $this->headers[$header] = $value;
     }
@@ -107,7 +107,7 @@ class HeventsClient implements HeventsClientInterface
     {
         return new Request(
             'POST',
-            $this->getUrl(),
+            $this->getFullUrl(),
             $this->getHeaders(),
             Event::fromArray($event)->toString()
         );
@@ -162,5 +162,23 @@ class HeventsClient implements HeventsClientInterface
     public function setKey(string $key)
     {
         $this->key = $key;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullUrl(): string
+    {
+        $url = rtrim($this->getUrl(), '/');
+        $uri = ltrim($this->getEndpoint(), '/');
+        return "{$url}/{$uri}";
+    }
+
+    /**
+     * @return string
+     */
+    private function getEndpoint(): string
+    {
+        return 'api/events';
     }
 }

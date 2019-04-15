@@ -53,7 +53,7 @@ class HeventsClientTest extends TestCase
     public function testReturnsPromiseInterfaceOnPostAsync()
     {
         $client   = new HeventsClient('http://test.domain.com', 'key');
-        $response = $client->post(['event' => 'test', 'properties' => []], true);
+        $response = $client->emit(['event' => 'test', 'properties' => []], true);
         $this->assertTrue(
             $response instanceof PromiseInterface
         );
@@ -62,9 +62,30 @@ class HeventsClientTest extends TestCase
     public function testReturnsResponseInterfaceOnPostAsync()
     {
         $client   = new HeventsClient('http://test.domain.com', 'key');
-        $response = $client->post(['event' => 'test', 'properties' => []]);
+        $response = $client->emit(['event' => 'test', 'properties' => []]);
         $this->assertTrue(
             $response instanceof ResponseInterface
+        );
+    }
+
+    public function clientUriProvider(): array
+    {
+        return [
+            ['http://test.domain.com'],
+            ['http://test.domain.com/'],
+        ];
+    }
+
+    /**
+     * @dataProvider clientUriProvider
+     * @param string $uri
+     */
+    public function testCanGetUrlWithEndpoint(string $uri)
+    {
+        $client = new HeventsClient($uri, 'key');
+        $this->assertStringEndsWith(
+            '/api/events',
+            $client->getFullUrl()
         );
     }
 }
