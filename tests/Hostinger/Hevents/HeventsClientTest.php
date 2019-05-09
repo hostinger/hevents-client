@@ -59,15 +59,6 @@ class HeventsClientTest extends TestCase
         );
     }
 
-    public function testReturnsResponseInterfaceOnPostAsync()
-    {
-        $client   = new HeventsClient('http://test.domain.com', 'key');
-        $response = $client->emit(['event' => 'test', 'properties' => []]);
-        $this->assertTrue(
-            $response instanceof ResponseInterface
-        );
-    }
-
     public function clientUriProvider(): array
     {
         return [
