@@ -58,6 +58,10 @@ class HeventsClient implements HeventsClientInterface
             [
                 'base_uri' => $url,
                 'timeout'  => 20,
+                'headers'  => [
+                    'accept'       => 'application/json',
+                    'content-type' => 'application/json',
+                ],
             ]
         );
     }
