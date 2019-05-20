@@ -26,7 +26,7 @@ class HeventsClientTest extends TestCase
             $client->getHeaders()
         );
         $this->assertEquals(
-            'key',
+            'Bearer key',
             $client->getHeaders()['Authorization']
         );
     }
@@ -59,23 +59,67 @@ class HeventsClientTest extends TestCase
         );
     }
 
+    public function testReturnsResponseInterfaceOnPostAsync()
+    {
+        $client   = new HeventsClient('https://jsonplaceholder.typicode.com/posts', 'key');
+        $response = $client->emit(['event' => 'test', 'properties' => []]);
+        $this->assertTrue(
+            $response instanceof ResponseInterface
+        );
+    }
+
     public function clientUriProvider(): array
     {
         return [
-            ['http://test.domain.com'],
-            ['http://test.domain.com/'],
+            [
+                'http://test.domain.com',
+                'http://test.domain.com/api/events'
+            ],
+            [
+                'http://test.domain.com/',
+                'http://test.domain.com/api/events',
+            ],
+            [
+                'https://test.domain.com',
+                'https://test.domain.com/api/events',
+            ],
+            [
+                'https://test.domain.com/',
+                'https://test.domain.com/api/events',
+            ],
+            [
+                'https://test.domain.com/',
+                'https://test.domain.com/api/events',
+            ],
+            [
+                'test.domain.com/',
+                'test.domain.com',
+            ],
+            [
+                'test.domain.com/test',
+                'test.domain.com/test',
+            ],
+            [
+                'test.domain.com/test/',
+                'test.domain.com/test',
+            ],
+            [
+                'https://test.domain.com/test/',
+                'https://test.domain.com/test',
+            ],
         ];
     }
 
     /**
      * @dataProvider clientUriProvider
      * @param string $uri
+     * @param string $result
      */
-    public function testCanGetUrlWithEndpoint(string $uri)
+    public function testCanGetUrlWithEndpoint(string $uri, string $result)
     {
         $client = new HeventsClient($uri, 'key');
         $this->assertStringEndsWith(
-            '/api/events',
+            $result,
             $client->getFullUrl()
         );
     }

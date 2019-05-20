@@ -13,6 +13,9 @@ use Psr\Http\Message\ResponseInterface;
  */
 class HeventsClient implements HeventsClientInterface
 {
+    const DEFAULT_PROTOCOL = 'https';
+    const ENDPOINT_URI     = '/api/events';
+
     /**
      * @var string
      */
@@ -64,7 +67,7 @@ class HeventsClient implements HeventsClientInterface
      */
     private function setAuthorizationHeader(string $key)
     {
-        $this->appendHeaders('Authorization', $key);
+        $this->appendHeaders('Authorization', "Bearer $key");
     }
 
     /**
@@ -169,9 +172,13 @@ class HeventsClient implements HeventsClientInterface
      */
     public function getFullUrl(): string
     {
-        $url = rtrim($this->getUrl(), '/');
-        $uri = ltrim($this->getEndpoint(), '/');
-        return "{$url}/{$uri}";
+        $urlParts = parse_url(rtrim($this->getUrl(), '/'));
+
+        $scheme = array_key_exists('scheme', $urlParts) ? $urlParts['scheme'] : self::DEFAULT_PROTOCOL;
+        $url    = array_key_exists('host', $urlParts) ? $urlParts['host'] : '';
+        $uri    = array_key_exists('path', $urlParts) ? $urlParts['path'] : $this->getEndpoint();
+
+        return "{$scheme}://{$url}{$uri}";
     }
 
     /**
@@ -179,6 +186,6 @@ class HeventsClient implements HeventsClientInterface
      */
     private function getEndpoint(): string
     {
-        return 'api/events';
+        return self::ENDPOINT_URI;
     }
 }
