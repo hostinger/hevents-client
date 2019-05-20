@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.3] - 2019-05-20
+### Added
+- `Accept` & `Content-Type` headers
+
 ## [1.0.2] - 2019-05-20
 ### Changed
 - Fixed authorization header not including `Bearer` keyword
