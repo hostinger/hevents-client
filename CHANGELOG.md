@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.2] - 2019-05-20
+### Changed
+- Fixed authorization header not including `Bearer` keyword
+- URL formatting - made endpoint parsing more flexible
+
 ## [1.0.1] - 2019-04-15
 ### Updated
 - Renamed `post` method to `emit`
