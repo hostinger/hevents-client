@@ -6,9 +6,13 @@ In your composer.json add the repository:
 "repositories":[
     {
         "type": "vcs",
-        "url": "git@github.com:hostinger/hevents-client.git"
+        "url": "git@github.com:hostinger/hevents-client-php.git"
     }
-]
+],
+"require": {
+    "hostinger/hevents-client": "^1.0",
+    ...
+}
 ```
 Run `composer install`
 
