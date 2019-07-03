@@ -115,12 +115,33 @@ class HeventsClientTest extends TestCase
      * @param string $uri
      * @param string $result
      */
-    public function testCanGetUrlWithEndpoint(string $uri, string $result)
+    public function testCanGetUrlWithEndpoint($uri, $result)
     {
         $client = new HeventsClient($uri, 'key');
         $this->assertStringEndsWith(
             $result,
             $client->getFullUrl()
         );
+    }
+
+    public function testCanCallWithTestCredentials()
+    {
+        $host = 'https://hevents.hostinger.io';
+        $key  = '4b6yB5kKSH9A2Qgl4YAXtQI58H5z12rTTMQD68v5wMCFkp1ImRDQOHAy6Dmx';
+
+        $data = [
+            'event'      => 'hevents.client.test',
+            'properties' => [
+                'testint'   => 1,
+                'testarray' => [
+                    'testfloat'  => 1.1,
+                    'teststring' => 'string'
+                ]
+            ],
+        ];
+
+        $client   = new HeventsClient($host, $key);
+        $response = $client->emit($data);
+        $this->assertEquals('200', $response->getStatusCode());
     }
 }

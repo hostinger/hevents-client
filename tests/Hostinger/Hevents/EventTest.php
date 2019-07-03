@@ -68,7 +68,7 @@ class EventTest extends TestCase
         self::assertTrue($event->getProperties() == []);
     }
 
-    public function invalidEventArgumentProvider(): array
+    public function invalidEventArgumentProvider()
     {
         return [
             [['event' => true, 'properties' => ['test_prop' => 'test_value']]],

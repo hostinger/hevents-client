@@ -23,7 +23,7 @@ class Event
      * @param string $name
      * @param array $properties
      */
-    public function __construct(string $name, array $properties = [])
+    public function __construct($name, array $properties = [])
     {
         $this->name       = $name;
         $this->properties = $properties;
@@ -33,7 +33,7 @@ class Event
      * @param array $params
      * @return Event
      */
-    public static function fromArray(array $params): Event
+    public static function fromArray(array $params)
     {
         self::validate(self::expectedArgs(), $params);
         return new Event($params['event'], $params['properties']);
@@ -62,7 +62,7 @@ class Event
     /**
      * @return array
      */
-    private static function expectedArgs(): array
+    private static function expectedArgs()
     {
         return [
             'event'      => [
@@ -80,7 +80,7 @@ class Event
     /**
      * @return string
      */
-    public function toString(): string
+    public function toString()
     {
         return json_encode([
             'event'      => $this->getName(),
@@ -91,7 +91,7 @@ class Event
     /**
      * @return string
      */
-    public function getName(): string
+    public function getName()
     {
         return $this->name;
     }
@@ -99,7 +99,7 @@ class Event
     /**
      * @param string $name
      */
-    public function setName(string $name)
+    public function setName($name)
     {
         $this->name = $name;
     }
@@ -107,7 +107,7 @@ class Event
     /**
      * @return array
      */
-    public function getProperties(): array
+    public function getProperties()
     {
         return $this->properties;
     }
