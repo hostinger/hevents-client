@@ -13,59 +13,59 @@ interface HeventsClientInterface
      * @param bool $async
      * @return PromiseInterface|ResponseInterface
      */
-    function emit(array $event, bool $async = false);
+    function emit(array $event, $async = null);
 
     /**
      * @param string $header
      * @param string $value
      */
-    function appendHeaders(string $header, string $value);
+    function appendHeaders($header, $value);
 
     /**
      * @return array
      */
-    function getHeaders(): array;
+    function getHeaders();
 
     /**
      * @param array $event
      * @return Request
      */
-    function createRequest(array $event): Request;
+    function createRequest(array $event);
 
     /**
      * @param Request $request
      * @return PromiseInterface
      */
-    function sendAsync(Request $request): PromiseInterface;
+    function sendAsync(Request $request);
 
     /**
      * @param Request $request
      * @return ResponseInterface
      */
-    function send(Request $request): ResponseInterface;
+    function send(Request $request);
 
     /**
      * @return string
      */
-    function getUrl(): string;
+    function getUrl();
 
     /**
      * @param string $url
      */
-    function setUrl(string $url);
+    function setUrl($url);
 
     /**
      * @return string
      */
-    function getKey(): string;
+    function getKey();
 
     /**
      * @param string $key
      */
-    function setKey(string $key);
+    function setKey($key);
 
     /**
      * @return string
      */
-    function getFullUrl(): string;
+    function getFullUrl();
 }

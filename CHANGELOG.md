@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.4] - 2019-07-03
+### Changed
+- Decreased the minimum required PHP version to 5.6
+- Changed the source code to be compatible with PHP 5.6
+
 ## [1.0.3] - 2019-05-20
 ### Added
 - `Accept` & `Content-Type` headers

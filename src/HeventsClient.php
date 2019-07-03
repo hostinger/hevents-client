@@ -41,7 +41,7 @@ class HeventsClient implements HeventsClientInterface
      * @param string $url
      * @param string $key
      */
-    public function __construct(string $url, string $key)
+    public function __construct($url, $key)
     {
         $this->setUrl($url);
         $this->setKey($key);
@@ -52,7 +52,7 @@ class HeventsClient implements HeventsClientInterface
     /**
      * @param string $url
      */
-    private function setUpHttpClient(string $url)
+    private function setUpHttpClient($url)
     {
         $this->client = new Client(
             [
@@ -69,7 +69,7 @@ class HeventsClient implements HeventsClientInterface
     /**
      * @param string $key
      */
-    private function setAuthorizationHeader(string $key)
+    private function setAuthorizationHeader($key)
     {
         $this->appendHeaders('Authorization', "Bearer $key");
     }
@@ -80,10 +80,10 @@ class HeventsClient implements HeventsClientInterface
      * @return PromiseInterface|ResponseInterface
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function emit(array $event, bool $async = false)
+    public function emit(array $event, $async = null)
     {
         $request = $this->createRequest($event);
-        if ($async) {
+        if ($async === true) {
             return $this->sendAsync($request);
         }
         return $this->send($request);
@@ -93,7 +93,7 @@ class HeventsClient implements HeventsClientInterface
      * @param string $header
      * @param string $value
      */
-    public function appendHeaders(string $header, string $value)
+    public function appendHeaders($header, $value)
     {
         $this->headers[$header] = $value;
     }
@@ -101,7 +101,7 @@ class HeventsClient implements HeventsClientInterface
     /**
      * @return array
      */
-    public function getHeaders(): array
+    public function getHeaders()
     {
         return $this->headers;
     }
@@ -110,7 +110,7 @@ class HeventsClient implements HeventsClientInterface
      * @param array $event
      * @return Request
      */
-    public function createRequest(array $event): Request
+    public function createRequest(array $event)
     {
         return new Request(
             'POST',
@@ -124,7 +124,7 @@ class HeventsClient implements HeventsClientInterface
      * @param Request $request
      * @return PromiseInterface
      */
-    public function sendAsync(Request $request): PromiseInterface
+    public function sendAsync(Request $request)
     {
         return $this->client->sendAsync($request);
     }
@@ -134,7 +134,7 @@ class HeventsClient implements HeventsClientInterface
      * @return ResponseInterface
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function send(Request $request): ResponseInterface
+    public function send(Request $request)
     {
         return $this->client->send($request);
     }
@@ -142,7 +142,7 @@ class HeventsClient implements HeventsClientInterface
     /**
      * @return string
      */
-    public function getUrl(): string
+    public function getUrl()
     {
         return $this->url;
     }
@@ -150,7 +150,7 @@ class HeventsClient implements HeventsClientInterface
     /**
      * @param string $url
      */
-    public function setUrl(string $url)
+    public function setUrl($url)
     {
         $this->url = $url;
     }
@@ -158,7 +158,7 @@ class HeventsClient implements HeventsClientInterface
     /**
      * @return string
      */
-    public function getKey(): string
+    public function getKey()
     {
         return $this->key;
     }
@@ -166,7 +166,7 @@ class HeventsClient implements HeventsClientInterface
     /**
      * @param string $key
      */
-    public function setKey(string $key)
+    public function setKey($key)
     {
         $this->key = $key;
     }
@@ -174,7 +174,7 @@ class HeventsClient implements HeventsClientInterface
     /**
      * @return string
      */
-    public function getFullUrl(): string
+    public function getFullUrl()
     {
         $urlParts = parse_url(rtrim($this->getUrl(), '/'));
 
@@ -188,7 +188,7 @@ class HeventsClient implements HeventsClientInterface
     /**
      * @return string
      */
-    private function getEndpoint(): string
+    private function getEndpoint()
     {
         return self::ENDPOINT_URI;
     }
