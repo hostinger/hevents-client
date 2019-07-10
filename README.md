@@ -35,7 +35,8 @@ $event = [
             'email' => 'ex@ample.com',
             'name' => 'Hevents'
         ]
-    ]
+    ],
+    'timestamp' => time(),
 ];
 
 $client = new HeventsClient('http://hevents.io', '938E5BF6213D34BD4C2EDF3C81E3E7BD80F52178F3B467643FE3D0F1E7377773');

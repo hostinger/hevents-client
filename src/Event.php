@@ -19,14 +19,25 @@ class Event
     protected $properties;
 
     /**
+     * @var int
+     */
+    protected $timestamp;
+
+    /**
      * Event constructor.
      * @param string $name
      * @param array $properties
+     * @param null|int $timestamp
      */
-    public function __construct($name, array $properties = [])
+    public function __construct($name, array $properties = [], $timestamp = null)
     {
         $this->name       = $name;
         $this->properties = $properties;
+        if (!$timestamp) {
+            $this->timestamp = time();
+        } else {
+            $this->timestamp = $timestamp;
+        }
     }
 
     /**
@@ -36,7 +47,7 @@ class Event
     public static function fromArray(array $params)
     {
         self::validate(self::expectedArgs(), $params);
-        return new Event($params['event'], $params['properties']);
+        return new Event($params['event'], $params['properties'], $params['timestamp']);
     }
 
     /**
@@ -69,6 +80,11 @@ class Event
                 'type'     => 'string',
                 'required' => true,
             ],
+            'timestamp'  => [
+                'type'     => 'integer',
+                'required' => true,
+                'default'  => time(),
+            ],
             'properties' => [
                 'type'     => 'array',
                 'required' => true,
@@ -85,6 +101,7 @@ class Event
         return json_encode([
             'event'      => $this->getName(),
             'properties' => $this->getProperties(),
+            'timestamp'  => $this->getTimestamp(),
         ]);
     }
 
@@ -118,5 +135,21 @@ class Event
     public function setProperties(array $properties)
     {
         $this->properties = $properties;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTimestamp()
+    {
+        return $this->timestamp;
+    }
+
+    /**
+     * @param int $timestamp
+     */
+    public function setTimestamp($timestamp)
+    {
+        $this->timestamp = $timestamp;
     }
 }

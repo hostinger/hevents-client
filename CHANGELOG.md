@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.5] - 2019-07-10
+### Added
+- `timestamp` parameter for events
+
 ## [1.0.4] - 2019-07-03
 ### Changed
 - Decreased the minimum required PHP version to 5.6

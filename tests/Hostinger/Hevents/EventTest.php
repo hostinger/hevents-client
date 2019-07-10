@@ -47,9 +47,9 @@ class EventTest extends TestCase
 
     public function testCanGetString()
     {
-        $event = new Event('test_name', ['test_prop' => 'test_value']);
+        $event = new Event('test_name', ['test_prop' => 'test_value'], 123456);
         $this->assertEquals(
-            '{"event":"test_name","properties":{"test_prop":"test_value"}}',
+            '{"event":"test_name","properties":{"test_prop":"test_value"},"timestamp":123456}',
             $event->toString()
         );
     }
@@ -89,9 +89,15 @@ class EventTest extends TestCase
 
     public function testCanGetStringFromArray()
     {
-        $event = Event::fromArray(['event' => 'test_name', 'properties' => ['test_prop' => 'test_value']]);
+        $event = Event::fromArray([
+            'event'      => 'test_name',
+            'properties' => [
+                'test_prop' => 'test_value'
+            ],
+            'timestamp'  => 123456
+        ]);
         $this->assertEquals(
-            '{"event":"test_name","properties":{"test_prop":"test_value"}}',
+            '{"event":"test_name","properties":{"test_prop":"test_value"},"timestamp":123456}',
             $event->toString()
         );
     }
