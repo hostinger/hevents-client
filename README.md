@@ -28,7 +28,7 @@ use Hostinger\Hevents\HeventsClient;
 
 $event = [
     'event' => 'USER_SIGN_UP',
-    'properties => [
+    'properties' => [
         'user_id' => 123,
         'time' => '2020-02-02',
         'details' => [
