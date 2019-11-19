@@ -3,6 +3,7 @@
 namespace Hostinger\Hevents;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\ResponseInterface;
@@ -75,17 +76,23 @@ class HeventsClient implements HeventsClientInterface
     }
 
     /**
-     * @param array $event
-     * @param bool $async
+     * @param array|EventDataInterface $event
+     * @param null $async
      * @return PromiseInterface|ResponseInterface
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
-    public function emit(array $event, $async = null)
+    public function emit($event, $async = null)
     {
-        $request = $this->createRequest($event);
+        if (is_array($event)) {
+            $event = Event::fromArray($event);
+        }
+
+        $request = $this->createRequest($event->toString());
+
         if ($async === true) {
             return $this->sendAsync($request);
         }
+
         return $this->send($request);
     }
 
@@ -107,16 +114,16 @@ class HeventsClient implements HeventsClientInterface
     }
 
     /**
-     * @param array $event
+     * @param string $data
      * @return Request
      */
-    public function createRequest(array $event)
+    protected function createRequest($data)
     {
         return new Request(
             'POST',
             $this->getFullUrl(),
             $this->getHeaders(),
-            Event::fromArray($event)->toString()
+            $data
         );
     }
 
@@ -132,7 +139,7 @@ class HeventsClient implements HeventsClientInterface
     /**
      * @param Request $request
      * @return ResponseInterface
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function send(Request $request)
     {

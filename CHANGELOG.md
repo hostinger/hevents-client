@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.1.2] - 2019-11-19
+### Added
+- `EventBag` class for multi-event emissions with a single request.
+
 ## [1.1.1] - 2019-07-10
 ### Added
 - `timestamp` parameter for events
