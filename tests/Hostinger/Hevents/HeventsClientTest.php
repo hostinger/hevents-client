@@ -3,7 +3,6 @@
 namespace Hostinger\Hevents;
 
 use GuzzleHttp\Promise\PromiseInterface;
-use GuzzleHttp\Psr7\Request;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 
@@ -31,25 +30,6 @@ class HeventsClientTest extends TestCase
         );
     }
 
-    public function testCreatesPostRequest()
-    {
-        $client  = new HeventsClient('http://test.domain.com', 'key');
-        $request = $client->createRequest(['event' => 'test', 'properties' => []]);
-        $this->assertTrue(
-            $request instanceof Request
-        );
-        $this->assertTrue($request->getMethod() == 'POST');
-    }
-
-    public function testCreatesRequestWithAuthHeader()
-    {
-        $client  = new HeventsClient('http://test.domain.com', 'key');
-        $request = $client->createRequest(['event' => 'test', 'properties' => []]);
-        $this->assertTrue(
-            $request->hasHeader('Authorization')
-        );
-    }
-
     public function testReturnsPromiseInterfaceOnPostAsync()
     {
         $client   = new HeventsClient('http://test.domain.com', 'key');
@@ -68,7 +48,7 @@ class HeventsClientTest extends TestCase
         );
     }
 
-    public function clientUriProvider(): array
+    public function clientUriProvider()
     {
         return [
             [
@@ -143,5 +123,25 @@ class HeventsClientTest extends TestCase
         $client   = new HeventsClient($host, $key);
         $response = $client->emit($data);
         $this->assertEquals('200', $response->getStatusCode());
+    }
+
+    public function testEmitsEventObject()
+    {
+        $event    = Event::fromArray(['event' => 'test', 'properties' => []]);
+        $client   = new HeventsClient('https://jsonplaceholder.typicode.com/posts', 'key');
+        $response = $client->emit($event);
+        $this->assertTrue(
+            $response instanceof ResponseInterface
+        );
+    }
+
+    public function testEmitsEventBagObject()
+    {
+        $eventBag = new EventBag([['event' => 'test', 'properties' => []]]);
+        $client   = new HeventsClient('https://jsonplaceholder.typicode.com/posts', 'key');
+        $response = $client->emit($eventBag);
+        $this->assertTrue(
+            $response instanceof ResponseInterface
+        );
     }
 }

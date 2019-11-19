@@ -2,7 +2,6 @@
 
 namespace Hostinger\Hevents;
 
-use GuzzleHttp\Psr7\Request;
 use PHPUnit\Framework\TestCase;
 
 class EventTest extends TestCase
@@ -100,5 +99,17 @@ class EventTest extends TestCase
             '{"event":"test_name","properties":{"test_prop":"test_value"},"timestamp":123456}',
             $event->toString()
         );
+    }
+
+    public function testSetsTimestamp()
+    {
+        $event = Event::fromArray([
+            'event'      => 'test_name',
+            'properties' => [
+                'test_prop' => 'test_value'
+            ],
+        ]);
+        $event->setTimestamp(12345678);
+        $this->assertEquals(12345678, $event->getTimestamp());
     }
 }

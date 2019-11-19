@@ -2,11 +2,13 @@
 
 namespace Hostinger\Hevents;
 
+use InvalidArgumentException;
+
 /**
  * Class Event
  * @package Hostinger\Hevents
  */
-class Event
+class Event implements EventDataInterface
 {
     /**
      * @var string
@@ -61,11 +63,11 @@ class Event
                 $received[$arg] = $value['default'];
             }
             if ($value['required'] && !isset($received[$arg])) {
-                throw new \InvalidArgumentException("Required argument `{$arg}` is missing");
+                throw new InvalidArgumentException("Required argument `{$arg}` is missing");
             }
             $type = gettype($received[$arg]);
             if ($type !== $value['type']) {
-                throw new \InvalidArgumentException("Argument `{$arg}` is expected to be of type `{$value['type']}`, received `{$type}`");
+                throw new InvalidArgumentException("Argument `{$arg}` is expected to be of type `{$value['type']}`, received `{$type}`");
             }
         }
     }
@@ -94,15 +96,23 @@ class Event
     }
 
     /**
+     * @return array
+     */
+    public function toArray()
+    {
+        return [
+            'event'      => $this->getName(),
+            'properties' => $this->getProperties(),
+            'timestamp'  => $this->getTimestamp(),
+        ];
+    }
+
+    /**
      * @return string
      */
     public function toString()
     {
-        return json_encode([
-            'event'      => $this->getName(),
-            'properties' => $this->getProperties(),
-            'timestamp'  => $this->getTimestamp(),
-        ]);
+        return json_encode($this->toArray());
     }
 
     /**
