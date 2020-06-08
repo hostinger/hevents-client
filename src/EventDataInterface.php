@@ -6,8 +6,5 @@ namespace Hostinger\Hevents;
 
 interface EventDataInterface
 {
-    /**
-     * @return string
-     */
-    function toString();
+    public function toArray(): array;
 }

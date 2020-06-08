@@ -1,7 +1,9 @@
 <?php
 
-namespace Hostinger\Hevents;
+namespace Tests\Hostinger\Hevents;
 
+use Hostinger\Hevents\Event;
+use Hostinger\Hevents\EventBag;
 use PHPUnit\Framework\TestCase;
 
 class EventBagTest extends TestCase
@@ -66,10 +68,11 @@ class EventBagTest extends TestCase
      * @dataProvider validEventProvider
      * @param array $events
      */
-    public function testReturnsCorrectJson(array $events)
+    public function testReturnsCorrectArray(array $events)
     {
         $bag      = new EventBag($events);
-        $expected = '[{"event":"TEST_EVENT_1","properties":[],"timestamp":12345678},{"event":"TEST_EVENT_2","properties":{"test_1":123,"test_2":true,"test_3":"3","test_4":null},"timestamp":12345678}]';
-        $this->assertEquals($expected, $bag->toString());
+        $expected = json_decode('[{"event":"TEST_EVENT_1","properties":[],"timestamp":12345678},{"event":"TEST_EVENT_2","properties":{"test_1":123,"test_2":true,"test_3":"3","test_4":null},"timestamp":12345678}]',
+            true);
+        $this->assertEquals($expected, $bag->toArray());
     }
 }

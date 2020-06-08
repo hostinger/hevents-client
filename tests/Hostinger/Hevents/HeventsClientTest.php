@@ -1,51 +1,19 @@
 <?php
 
-namespace Hostinger\Hevents;
+namespace Tests\Hostinger\Hevents;
 
-use GuzzleHttp\Promise\PromiseInterface;
+use Hostinger\Hevents\DefaultHandler;
+use Hostinger\Hevents\Event;
+use Hostinger\Hevents\EventBag;
+use Hostinger\Hevents\HeventsClient;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\ResponseInterface;
 
 class HeventsClientTest extends TestCase
 {
-    public function testCanUseHeventsEndpoint()
+    public function testConstructsClient()
     {
-        $client = new HeventsClient('http://test.domain.com', 'key');
-        $this->assertEquals(
-            'http://test.domain.com',
-            $client->getUrl()
-        );
-    }
-
-    public function testHasApiKeyAuthHeader()
-    {
-        $client = new HeventsClient('http://test.domain.com', 'key');
-        $this->assertArrayHasKey(
-            'Authorization',
-            $client->getHeaders()
-        );
-        $this->assertEquals(
-            'Bearer key',
-            $client->getHeaders()['Authorization']
-        );
-    }
-
-    public function testReturnsPromiseInterfaceOnPostAsync()
-    {
-        $client   = new HeventsClient('http://test.domain.com', 'key');
-        $response = $client->emit(['event' => 'test', 'properties' => []], true);
-        $this->assertTrue(
-            $response instanceof PromiseInterface
-        );
-    }
-
-    public function testReturnsResponseInterfaceOnPostAsync()
-    {
-        $client   = new HeventsClient('https://jsonplaceholder.typicode.com/posts', 'key');
-        $response = $client->emit(['event' => 'test', 'properties' => []]);
-        $this->assertTrue(
-            $response instanceof ResponseInterface
-        );
+        $client = new HeventsClient('test.com', 'key');
+        $this->assertTrue($client instanceof HeventsClient);
     }
 
     public function clientUriProvider()
@@ -53,7 +21,7 @@ class HeventsClientTest extends TestCase
         return [
             [
                 'http://test.domain.com',
-                'http://test.domain.com/api/events'
+                'http://test.domain.com/api/events',
             ],
             [
                 'http://test.domain.com/',
@@ -73,21 +41,32 @@ class HeventsClientTest extends TestCase
             ],
             [
                 'test.domain.com/',
-                'test.domain.com',
+                'https://test.domain.com',
             ],
             [
                 'test.domain.com/test',
-                'test.domain.com/test',
+                'https://test.domain.com/test',
             ],
             [
                 'test.domain.com/test/',
-                'test.domain.com/test',
+                'https://test.domain.com/test',
             ],
             [
                 'https://test.domain.com/test/',
                 'https://test.domain.com/test',
             ],
         ];
+    }
+
+    public function testReturnsBoolOnSuccessfulResponse()
+    {
+        $handler = $this->createMock(DefaultHandler::class);
+        $handler->method('send')->willReturn(true);
+
+        $client = new HeventsClient('test.com', 'key');
+        $client->setHandler($handler);
+
+        $this->assertTrue($client->emit(['event' => 'test', 'properties' => []]));
     }
 
     /**
@@ -98,50 +77,32 @@ class HeventsClientTest extends TestCase
     public function testCanGetUrlWithEndpoint($uri, $result)
     {
         $client = new HeventsClient($uri, 'key');
-        $this->assertStringEndsWith(
-            $result,
-            $client->getFullUrl()
-        );
-    }
-
-    public function testCanCallWithTestCredentials()
-    {
-        $host = 'https://hevents.hostinger.io';
-        $key  = '4b6yB5kKSH9A2Qgl4YAXtQI58H5z12rTTMQD68v5wMCFkp1ImRDQOHAy6Dmx';
-
-        $data = [
-            'event'      => 'hevents.client.test',
-            'properties' => [
-                'testint'   => 1,
-                'testarray' => [
-                    'testfloat'  => 1.1,
-                    'teststring' => 'string'
-                ]
-            ],
-        ];
-
-        $client   = new HeventsClient($host, $key);
-        $response = $client->emit($data);
-        $this->assertEquals('200', $response->getStatusCode());
+        $this->assertEquals($result, $client->getFullUrl($uri));
     }
 
     public function testEmitsEventObject()
     {
-        $event    = Event::fromArray(['event' => 'test', 'properties' => []]);
-        $client   = new HeventsClient('https://jsonplaceholder.typicode.com/posts', 'key');
-        $response = $client->emit($event);
-        $this->assertTrue(
-            $response instanceof ResponseInterface
-        );
+        $event = Event::fromArray(['event' => 'test', 'properties' => []]);
+
+        $handler = $this->createMock(DefaultHandler::class);
+        $handler->method('send')->willReturn(true);
+
+        $client = new HeventsClient('test.com', 'key');
+        $client->setHandler($handler);
+
+        $this->assertTrue($client->emit($event));
     }
 
     public function testEmitsEventBagObject()
     {
         $eventBag = new EventBag([['event' => 'test', 'properties' => []]]);
-        $client   = new HeventsClient('https://jsonplaceholder.typicode.com/posts', 'key');
-        $response = $client->emit($eventBag);
-        $this->assertTrue(
-            $response instanceof ResponseInterface
-        );
+
+        $handler = $this->createMock(DefaultHandler::class);
+        $handler->method('send')->willReturn(true);
+
+        $client = new HeventsClient('test.com', 'key');
+        $client->setHandler($handler);
+
+        $this->assertTrue($client->emit($eventBag));
     }
 }

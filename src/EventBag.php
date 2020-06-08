@@ -6,15 +6,8 @@ namespace Hostinger\Hevents;
 
 class EventBag implements EventDataInterface
 {
-    /**
-     * @var array
-     */
     protected $events = [];
 
-    /**
-     * EventBag constructor.
-     * @param array $events
-     */
     public function __construct(array $events)
     {
         foreach ($events as $event) {
@@ -22,31 +15,20 @@ class EventBag implements EventDataInterface
         }
     }
 
-    /**
-     * @param array $event
-     */
     public function appendEvent(array $event)
     {
         array_push($this->events, Event::fromArray($event));
     }
 
-    /**
-     * @return array
-     */
-    public function getEvents()
+    public function getEvents(): array
     {
         return $this->events;
     }
 
-    /**
-     * @return string
-     */
-    public function toString()
+    public function toArray(): array
     {
-        return json_encode(
-            array_map(function ($event) {
-                return $event->toArray();
-            }, $this->events)
-        );
+        return array_map(function (Event $event) {
+            return $event->toArray();
+        }, $this->getEvents());
     }
 }

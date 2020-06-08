@@ -2,12 +2,8 @@
 
 namespace Hostinger\Hevents;
 
-use InvalidArgumentException;
+use Exception;
 
-/**
- * Class Event
- * @package Hostinger\Hevents
- */
 class Event implements EventDataInterface
 {
     /**
@@ -25,16 +21,11 @@ class Event implements EventDataInterface
      */
     protected $timestamp;
 
-    /**
-     * Event constructor.
-     * @param string $name
-     * @param array $properties
-     * @param null|int $timestamp
-     */
-    public function __construct($name, array $properties = [], $timestamp = null)
+    public function __construct(string $name, array $properties = [], ?int $timestamp = null)
     {
         $this->name       = $name;
         $this->properties = $properties;
+
         if (!$timestamp) {
             $this->timestamp = time();
         } else {
@@ -42,124 +33,59 @@ class Event implements EventDataInterface
         }
     }
 
-    /**
-     * @param array $params
-     * @return Event
-     */
-    public static function fromArray(array $params)
+    public static function fromArray(array $params): Event
     {
-        self::validate(self::expectedArgs(), $params);
+        if (!isset($params['event']) || empty($params['event']) || !is_string($params['event'])) {
+            throw new Exception('Event name is invalid or not provided');
+        }
+
+        if (!isset($params['properties']) || !is_array($params['properties'])) {
+            $params['properties'] = [];
+        }
+
+        if (!isset($params['timestamp']) || !is_int($params['timestamp'])) {
+            $params['timestamp'] = time();
+        }
+
         return new Event($params['event'], $params['properties'], $params['timestamp']);
     }
 
-    /**
-     * @param array $expected
-     * @param array $received
-     */
-    private static function validate(array $expected, array &$received)
+    public function getName(): string
     {
-        foreach ($expected as $arg => $value) {
-            if (isset($value['default']) && !isset($received[$arg])) {
-                $received[$arg] = $value['default'];
-            }
-            if ($value['required'] && !isset($received[$arg])) {
-                throw new InvalidArgumentException("Required argument `{$arg}` is missing");
-            }
-            $type = gettype($received[$arg]);
-            if ($type !== $value['type']) {
-                throw new InvalidArgumentException("Argument `{$arg}` is expected to be of type `{$value['type']}`, received `{$type}`");
-            }
-        }
+        return $this->name;
     }
 
-    /**
-     * @return array
-     */
-    private static function expectedArgs()
+    public function setName(string $name): void
     {
-        return [
-            'event'      => [
-                'type'     => 'string',
-                'required' => true,
-            ],
-            'timestamp'  => [
-                'type'     => 'integer',
-                'required' => true,
-                'default'  => time(),
-            ],
-            'properties' => [
-                'type'     => 'array',
-                'required' => true,
-                'default'  => [],
-            ],
-        ];
+        $this->name = $name;
     }
 
-    /**
-     * @return array
-     */
-    public function toArray()
+    public function getProperties(): array
+    {
+        return $this->properties;
+    }
+
+    public function setProperties(array $properties): void
+    {
+        $this->properties = $properties;
+    }
+
+    public function getTimestamp(): int
+    {
+        return $this->timestamp;
+    }
+
+    public function setTimestamp(int $timestamp): void
+    {
+        $this->timestamp = $timestamp;
+    }
+
+    public function toArray(): array
     {
         return [
             'event'      => $this->getName(),
             'properties' => $this->getProperties(),
             'timestamp'  => $this->getTimestamp(),
         ];
-    }
-
-    /**
-     * @return string
-     */
-    public function toString()
-    {
-        return json_encode($this->toArray());
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * @return array
-     */
-    public function getProperties()
-    {
-        return $this->properties;
-    }
-
-    /**
-     * @param array $properties
-     */
-    public function setProperties(array $properties)
-    {
-        $this->properties = $properties;
-    }
-
-    /**
-     * @return int
-     */
-    public function getTimestamp()
-    {
-        return $this->timestamp;
-    }
-
-    /**
-     * @param int $timestamp
-     */
-    public function setTimestamp($timestamp)
-    {
-        $this->timestamp = $timestamp;
     }
 }

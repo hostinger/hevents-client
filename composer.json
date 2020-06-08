@@ -11,12 +11,12 @@
         }
     ],
     "require": {
-        "php": ">=5.6",
+        "php": ">=7.1",
         "guzzlehttp/guzzle": "6.*",
         "ext-json": "*"
     },
     "require-dev": {
-        "phpunit/phpunit": "5.*"
+        "phpunit/phpunit": "8.*"
     },
     "autoload": {
         "psr-4": {
@@ -25,7 +25,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Hostinger\\Hevents\\Tests\\": "tests/"
+            "Tests\\": "tests/"
         }
     },
     "config": {
