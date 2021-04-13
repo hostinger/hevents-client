@@ -27,6 +27,6 @@ class DefaultHandler implements RequestHandlerInterface
 
     public function send(array $event): bool
     {
-        return $this->client->post(null, ['json' => $event])->getStatusCode() == 200;
+        return $this->client->post('', ['json' => $event])->getStatusCode() == 200;
     }
 }
